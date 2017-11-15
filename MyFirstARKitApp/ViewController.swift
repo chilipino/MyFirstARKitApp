@@ -57,7 +57,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         // get the last point of interest from the touch location (why last?)
         guard let hitResult = result.last else { return }
         
-        // turn that point into something a scene can understand
+        // turn that point into something a scene can understand (need to dig into thi)
         let hitTransform = SCNMatrix4.init(hitResult.worldTransform)
         
         // make the actual point in 3D space.  m41 = x, m42 = y, m43 = z
