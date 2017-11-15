@@ -47,6 +47,33 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.pause()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // make sure there is an actual touch before doing work
+        guard let touch = touches.first else { return }
+        
+        // get the touch
+        let result = sceneView.hitTest(touch.location(in: sceneView), types: [ARHitTestResult.ResultType.featurePoint])
+        
+        // get the last point of interest from the touch location (why last?)
+        guard let hitResult = result.last else { return }
+        
+        // turn that point into something a scene can understand
+        let hitTransform = SCNMatrix4.init(hitResult.worldTransform)
+        
+        // make the actual point in 3D space.  m41 = x, m42 = y, m43 = z
+        let hitVector = SCNVector3Make(hitTransform.m41, hitTransform.m42, hitTransform.m43)
+        
+        // put the ball there
+        createBall(position: hitVector)
+    }
+    
+    func createBall(position:  SCNVector3)  {
+        let ballShape = SCNSphere(radius: 0.1)
+        let ballNode = SCNNode(geometry: ballShape)
+        ballNode.position = position
+        sceneView.scene.rootNode.addChildNode(ballNode)
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
